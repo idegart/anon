@@ -1,18 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
+Route::prefix('bot')->group(function () {
+    Route::post('', 'Api\BotController@store');
+    Route::delete('{token}', 'Api\BotController@destroy');
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+    Route::any('callback/{token}', 'Api\BotController@callback')->name('bot.callback');
 });
