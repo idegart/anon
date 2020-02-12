@@ -60,7 +60,7 @@ class BotController extends Controller
 
                 if ($text == '/start') {
                     $api->sendMessage([
-                        'chat_id' => $bot->channel_id,
+                        'chat_id' => $message->getChat()->getId(),
                         'text' => 'Напишите мне анонимное сообщени и я отправлю его в общий чат от своего имени',
                     ]);
                 } elseif ($text === '/start-anon') {
