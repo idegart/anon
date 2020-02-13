@@ -56,8 +56,28 @@ class BotController extends Controller
         $updates = $api->getWebhookUpdates();
 
         if ($message = $updates->getMessage()) {
-            if ($text = $message->getText()) {
+            if ($message->getMigrateFromChatId() || $message->getMigrateToChatId()) {
+                $bot->update([
+                    'channel_id' => $message->getChat()->getId(),
+                ]);
+            }
 
+            if ($sticker = $message->getSticker()) {
+                $api->sendSticker([
+                    'chat_id' => $bot->channel_id,
+                    'sticker' => $sticker->getFileId(),
+                ]);
+            }
+
+            if ($photos = $message->getPhoto()) {
+                $photo = $photos[0];
+                $api->sendPhoto([
+                    'chat_id' => $bot->channel_id,
+                    'photo' => $photo['file_id']
+                ]);
+            }
+
+            if (($text = $message->getText()) || ($text = $message->getCaption())) {
                 if ($text == '/start') {
                     $api->sendMessage([
                         'chat_id' => $message->getChat()->getId(),
@@ -75,6 +95,10 @@ class BotController extends Controller
                     $api->sendMessage([
                         'chat_id' => $bot->channel_id,
                         'text' => $text,
+                    ]);
+                    $api->sendMessage([
+                        'chat_id' => $message->getChat()->getId(),
+                        'text' => 'Ваше сообщение было анонимно отправлено'
                     ]);
                 }
             }
