@@ -6,6 +6,7 @@ use App\Bot;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Bot\DestroyRequest;
 use App\Http\Requests\Api\Bot\StoreRequest;
+use Log;
 use Telegram\Bot\Api;
 
 class BotController extends Controller
@@ -56,6 +57,9 @@ class BotController extends Controller
         $updates = $api->getWebhookUpdates();
 
         if ($message = $updates->getMessage()) {
+
+            Log::info($message);
+
             if ($message->getMigrateFromChatId() || $message->getMigrateToChatId()) {
                 $bot->update([
                     'channel_id' => $message->getChat()->getId(),
