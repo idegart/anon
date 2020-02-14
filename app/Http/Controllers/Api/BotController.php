@@ -77,7 +77,19 @@ class BotController extends Controller
                 ]);
             }
 
+            if ($document = $message->getDocument()) {
+                $api->sendDocument([
+                    'chat_id' => $bot->channel_id,
+                    'document' => $document->getFileId(),
+                ]);
+            }
+
             if (($text = $message->getText()) || ($text = $message->getCaption())) {
+
+                if ($message->getReplyToMessage()) {
+                    return response('ok');
+                }
+
                 if ($text == '/start') {
                     $api->sendMessage([
                         'chat_id' => $message->getChat()->getId(),
